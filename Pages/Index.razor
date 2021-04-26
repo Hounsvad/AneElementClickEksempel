@@ -1,0 +1,39 @@
+﻿@page "/"
+
+@using System.Diagnostics.Eventing.Reader
+@using System.Net.Mime
+@inject IJSRuntime JS;
+
+<h1>Hello, world!</h1>
+<img src="/target.jpg" id="imageTarget" @onclick="OnElementClick" />
+<p>Welcome to your new app.</p>
+
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+
+@code {
+    ElementReference MyElementReference;
+    public class BoundingClientRect
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public double Top { get; set; }
+        public double Right { get; set; }
+        public double Bottom { get; set; }
+        public double Left { get; set; }
+    }
+
+    private async Task OnElementClick(MouseEventArgs e)
+
+    {
+        //JS.InvokeVoidAsync("alert", "Hello, World");
+        var result = await JS.InvokeAsync<BoundingClientRect>("AneClickFind", new object[] { "imageTarget" });
+        var x = (int)(e.ClientX - result.Left);
+        var y = (int)(e.ClientY - result.Top);
+        JS.InvokeVoidAsync("alert", $"absolute-x: {e.ClientX}, absolute-x: {e.ClientY}\nrelative-x: {x}, relative-y: {y}");
+
+    }
+}
