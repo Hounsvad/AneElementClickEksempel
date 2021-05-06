@@ -5,30 +5,26 @@
 @inject IJSRuntime JS;
 
 <h1>Hello, world!</h1>
-
-<img src="/target.jpg" id="imageTarget" @onclick="OnElementClick" />
-<p>Welcome to your new app.</p>
-@if (dexists)
-{
-    <div @onclick="OnElementClick" style="        
+<div style="position:static;">
+    <img src="/target.jpg" id="imageTarget" @onclick="OnElementClick"/>
+    @if (dexists)
+    {
+        <div @onclick="OnDotClick" style="
         width: @(dradius*2)px;
         height: @(dradius*2)px;
         top: @(dy-dradius)px;
         left: @(dx-dradius)px;
         background-color: magenta;
-        position: fixed;
+        position: absolute;
         border-radius: @(dradius)px;
         "></div>
-}
-
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+    }
+</div>
 
 
 @code {
     bool dexists = false;
     int dradius = 25;
-
     int dx;
     int dy;
     ElementReference MyElementReference;
@@ -47,20 +43,22 @@
     private async Task OnElementClick(MouseEventArgs e)
 
     {
-        //JS.InvokeVoidAsync("alert", "Hello, World");
         var result = await JS.InvokeAsync<BoundingClientRect>("AneClickFind", new object[] { "imageTarget" });
         var x = (int)(e.ClientX - result.Left);
         var y = (int)(e.ClientY - result.Top);
         //await JS.InvokeVoidAsync("alert", $"absolute-x: {e.ClientX}, absolute-x: {e.ClientY}\nrelative-x: {x}, relative-y: {y}");
         if (!dexists)
         {
+
+            var scroll = await JS.InvokeAsync<int>("GetWindowYScroll");
             dexists = true;
             dx = (int)e.ClientX;
-            dy = (int)e.ClientY;
+            dy = (int)e.ClientY + scroll;
         }
-        else if((dx - e.ClientX >= dradius*-1 && dx - e.ClientX <= dradius || dx - e.ClientX == 0) && (dy - e.ClientY >= dradius * -1 && dy - e.ClientY <= dradius || dy - e.ClientY == 0) )
-        {
-            dexists = false;
-        }
+    }
+
+    private async Task OnDotClick(MouseEventArgs e)
+    {
+        dexists = false;
     }
 }
