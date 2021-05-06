@@ -17,6 +17,7 @@
         left: @(dx-dradius)px;
         background-color: magenta;
         position: fixed;
+        border-radius: @(dradius)px;
         "></div>
 }
 
@@ -50,7 +51,7 @@
         var result = await JS.InvokeAsync<BoundingClientRect>("AneClickFind", new object[] { "imageTarget" });
         var x = (int)(e.ClientX - result.Left);
         var y = (int)(e.ClientY - result.Top);
-        await JS.InvokeVoidAsync("alert", $"absolute-x: {e.ClientX}, absolute-x: {e.ClientY}\nrelative-x: {x}, relative-y: {y}");
+        //await JS.InvokeVoidAsync("alert", $"absolute-x: {e.ClientX}, absolute-x: {e.ClientY}\nrelative-x: {x}, relative-y: {y}");
         if (!dexists)
         {
             dexists = true;
